@@ -9,7 +9,7 @@ public class RunRamblersAstart {
         int matrix_width = tm.getWidth();
 
         // evaluate N times
-        int EXP_NUMs = 50;
+        int EXP_NUMs = 100;
         Random rand = new Random();
 
         float bb_accum_res = 0.0f;
@@ -17,6 +17,7 @@ public class RunRamblersAstart {
         ArrayList<Float> bb_res_list = new ArrayList<Float>();
         ArrayList<Float> as_res_list = new ArrayList<Float>();
         for (int i=0; i<EXP_NUMs; ++i){
+            System.out.print("Iteration index: " + (i+1) + "\n");
             int goal_d = rand.nextInt(matrix_depth); //ThreadLocalRandom.current().nextInt(0, matrix_depth);
             int goal_w = rand.nextInt(matrix_width); //ThreadLocalRandom.current().nextInt(0, matrix_width);
     
@@ -48,18 +49,17 @@ public class RunRamblersAstart {
                 SearchState initState = (SearchState) new RamblersState(new Coords(init_d, init_w), 
                                                                         tmap[init_d][init_w], 0, eval_idx);  
     
-                //System.out.println("The cost for " + indictors[eval_idx] + " distance");
+                System.out.println("The cost for " + indictors[eval_idx] + " distance");
                 float res_branchbound = rambler_searcher.runSearchE(initState, "branchAndBound");
                 bb_res_list.add(res_branchbound);
 
                 bb_diff_cost += res_branchbound;
-                // bb_accum_res += res_branchbound;
-                //System.out.println("branchAndBound : " + res_branchbound);
+                System.out.println("branchAndBound : " + res_branchbound);
     
                 float res_astar = rambler_searcher.runSearchE(initState, "AStar");
                 as_res_list.add(res_astar);
                 astar_diff_cost += res_astar;
-                //System.out.println("         AStar : "+ res_astar);
+                System.out.println("         AStar : "+ res_astar);
             }
             as_accum_res += astar_diff_cost/4;
             bb_accum_res += bb_diff_cost/4;

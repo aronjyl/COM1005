@@ -29,8 +29,8 @@ public class TestTerrainMap {
 
     TerrainMap tm = new TerrainMap("diablo.pgm");
 
-    System.out.println(tm.getWidth());
-    System.out.println(tm.getDepth());
+    System.out.println(tm.getWidth());  // x
+    System.out.println(tm.getDepth());  // y
     System.out.println(tm.getHeight());
     System.out.println(tm.getTmap()[7][2]);
     System.out.println(tm.getTmap()[3][5]);
