@@ -1,5 +1,4 @@
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class RunRamblersBB {    
     public static void main(String[] arg){
@@ -9,16 +8,18 @@ public class RunRamblersBB {
         int matrix_width = tm.getWidth();
         int matrix_depth = tm.getDepth();
         // evaluate N times
-        int EXP_NUMs = 1000;
+        int EXP_NUMs = 100;
+        Random rand = new Random();
+
         float bb_accum_res = 0.0f;
         ArrayList<Float> bb_res_list = new ArrayList<Float>();
 
         for (int i=0; i<EXP_NUMs; ++i){
-            int goal_d = ThreadLocalRandom.current().nextInt(0, matrix_depth);
-            int goal_w = ThreadLocalRandom.current().nextInt(0, matrix_width);
+            int goal_d = rand.nextInt(matrix_depth); //ThreadLocalRandom.current().nextInt(0, matrix_depth);
+            int goal_w = rand.nextInt(matrix_width); //ThreadLocalRandom.current().nextInt(0, matrix_width);
     
-            int init_d = ThreadLocalRandom.current().nextInt(0, matrix_depth);
-            int init_w = ThreadLocalRandom.current().nextInt(0, matrix_width);
+            int init_d = rand.nextInt(matrix_depth); //ThreadLocalRandom.current().nextInt(0, matrix_depth);
+            int init_w = rand.nextInt(matrix_width); //ThreadLocalRandom.current().nextInt(0, matrix_width);
     
             // System.out.println("start x: " + init_d);
             // System.out.println("start y: " + init_w);
@@ -29,7 +30,7 @@ public class RunRamblersBB {
             /*
             1. init a number of start/end points on tmc map
             */ 
-            Coords goal = new Coords(goal_d, goal_w);
+            Coords goal = new Coords(goal_w, goal_d);
             int tmap[][] = tm.getTmap();
             /*
             2. evaluating these points for branch_bound
@@ -46,7 +47,7 @@ public class RunRamblersBB {
         }
         System.out.println("\nB&B's avg for " + EXP_NUMs + " times: " + bb_accum_res/EXP_NUMs + 
                     " Standard Deviation: " + calculateSD(bb_res_list));
-    }     
+    }
 
     public static double calculateSD(ArrayList<Float> numList){
         float sum = 0.0f, standardDeviation = 0.0f;
