@@ -1,5 +1,4 @@
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class RunRamblersAstart {
     public static void main(String[] arg){
@@ -10,24 +9,25 @@ public class RunRamblersAstart {
         int matrix_width = tm.getWidth();
 
         // evaluate N times
-        int EXP_NUMs = 1000;
+        int EXP_NUMs = 50;
+        Random rand = new Random();
 
         float bb_accum_res = 0.0f;
         float as_accum_res = 0.0f;
         ArrayList<Float> bb_res_list = new ArrayList<Float>();
         ArrayList<Float> as_res_list = new ArrayList<Float>();
         for (int i=0; i<EXP_NUMs; ++i){
-            int goal_d = ThreadLocalRandom.current().nextInt(0, matrix_depth);
-            int goal_w = ThreadLocalRandom.current().nextInt(0, matrix_width);
+            int goal_d = rand.nextInt(matrix_depth); //ThreadLocalRandom.current().nextInt(0, matrix_depth);
+            int goal_w = rand.nextInt(matrix_width); //ThreadLocalRandom.current().nextInt(0, matrix_width);
     
-            int init_d = ThreadLocalRandom.current().nextInt(0, matrix_depth);
-            int init_w = ThreadLocalRandom.current().nextInt(0, matrix_width);
+            int init_d = rand.nextInt(matrix_depth); //ThreadLocalRandom.current().nextInt(0, matrix_depth);
+            int init_w = rand.nextInt(matrix_width); //ThreadLocalRandom.current().nextInt(0, matrix_width);
     
-            // System.out.println("start x: " + init_d);
-            // System.out.println("start y: " + init_w);
+            System.out.println("start x: " + init_d);
+            System.out.println("start y: " + init_w);
     
-            // System.out.println("end x: " + goal_d);
-            // System.out.println("end y: " + goal_w);
+            System.out.println("end x: " + goal_d);
+            System.out.println("end y: " + goal_w);
     
             /*
             3. evaluting A* search for 
@@ -36,7 +36,7 @@ public class RunRamblersAstart {
                 3) height diff;
                 4) combination all
             */        
-            Coords goal = new Coords(goal_d, goal_w);
+            Coords goal = new Coords(goal_w, goal_d);
             int tmap[][] = tm.getTmap();
     
             RamblersSearch rambler_searcher = new RamblersSearch(tm, goal);
