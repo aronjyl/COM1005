@@ -3,7 +3,7 @@ import java.util.*;
 public class RamblersState extends SearchState{
     private static final int[][] DIRECTIONS = {{1,0},{0,1},{-1,0},{0,-1}};
     private Coords curr_coords;
-
+    private int eval_flag = 0;
     // constructor
     public RamblersState(Coords coords, int localcost_, int rc, int ef){
         curr_coords = coords;
@@ -20,7 +20,7 @@ public class RamblersState extends SearchState{
     public boolean goalPredicate(Search searcher){
         RamblersSearch ramSearcher = (RamblersSearch) searcher;
         // taget coord
-        Coords tar = ramSearcher.getGoal();        
+        Coords tar = ramSearcher.getGoal();
         if (curr_coords.getx() == tar.getx() && curr_coords.gety() == tar.gety()) {
             return true;
         }else{
@@ -42,12 +42,10 @@ public class RamblersState extends SearchState{
     public ArrayList<SearchState> getSuccessors(Search searcher){
         RamblersSearch ramSearcher = (RamblersSearch) searcher;
         TerrainMap terr_m = ramSearcher.getMap();
-
         int[][] tMap = terr_m.getTmap();
 
         ArrayList<SearchState> successors = new ArrayList<SearchState>();
-        // iterate 4 around directions
-        // final int[][] DIRECTIONS = {{1,0},{0,1},{-1,0},{0,-1}};
+        // iterate 4 around directions and collect all valid steps
         for (int i=0; i<4; ++i) {
             int x = curr_coords.getx() + DIRECTIONS[i][0];
             int y = curr_coords.gety() + DIRECTIONS[i][1];
@@ -56,15 +54,27 @@ public class RamblersState extends SearchState{
             if (x < 0 || y < 0 || x >= terr_m.getWidth() || y >= terr_m.getDepth()) continue;
 
             Coords nextCoords = new Coords(x, y);
-
-            // TODO: switch for euclidan, manhatan, height and combining all
-            // if (ef == 1){
-            // }
-
+            int temp_est;
+            // 0 for eucledian, 1 for manhatten, 2 for height and 3 for all
+            switch (eval_flag) {
+                case 0:
+                    temp_est = terr_m.eucledianEst( curr_coords, ramSearcher.getGoal() );
+                    break;
+                case 1:
+                    temp_est = terr_m.manhattenEst( curr_coords, ramSearcher.getGoal() );
+                    break;
+                case 2:
+                    temp_est = terr_m.heightEst( curr_coords, ramSearcher.getGoal() );
+                    break;
+                default:
+                    temp_est = terr_m.eucledianEst( curr_coords, ramSearcher.getGoal() ) + 
+                                terr_m.manhattenEst( curr_coords, ramSearcher.getGoal() ) + 
+                                terr_m.heightEst( curr_coords, ramSearcher.getGoal() );
+                    break;
+            }
             RamblersState nextSuccessor = new RamblersState(nextCoords, 
                                                 tMap[nextCoords.getx()][nextCoords.gety()],
-                                                terr_m.manhattenEst( curr_coords, ramSearcher.getGoal() )
-                                                );
+                                                temp_est, eval_flag);
             successors.add(nextSuccessor);
         }
         return successors;
