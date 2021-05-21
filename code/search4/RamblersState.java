@@ -44,6 +44,8 @@ public class RamblersState extends SearchState{
         TerrainMap terr_m = ramSearcher.getMap();
         int[][] tMap = terr_m.getTmap();
 
+        int original_lc = tMap[curr_coords.getx()][curr_coords.gety()];
+
         ArrayList<SearchState> successors = new ArrayList<SearchState>();
         // iterate 4 around directions and collect all valid steps
         for (int i=0; i<4; ++i) {
@@ -51,9 +53,9 @@ public class RamblersState extends SearchState{
             int y = curr_coords.gety() + DIRECTIONS[i][1];
 
             // ignore invalid steps
-            if (x < 0 || y < 0 || x >= terr_m.getWidth() || y >= terr_m.getDepth()) continue;
+            if (x < 0 || y < 0 || x >= terr_m.getDepth() || y >= terr_m.getWidth()) continue;
 
-            Coords nextCoords = new Coords(x, y);
+            Coords nextCoords = new Coords(y, x);
             int temp_est;
             // 0 for eucledian, 1 for manhatten, 2 for height and 3 for all
             switch (eval_flag) {
@@ -72,9 +74,13 @@ public class RamblersState extends SearchState{
                                 terr_m.heightEst( curr_coords, ramSearcher.getGoal() );
                     break;
             }
-            RamblersState nextSuccessor = new RamblersState(nextCoords, 
-                                                tMap[nextCoords.getx()][nextCoords.gety()],
-                                                temp_est, eval_flag);
+            // the equation for rambler's cost 
+            // int next_lc = tMap[x][y];
+            // // 1 or 1 + | h(y, x) - h(y, x) |
+            // next_lc = next_lc <= original_lc ? 1 : 1 + (original_lc - next_lc);
+            
+            RamblersState nextSuccessor = new RamblersState(nextCoords, tMap[x][y], 
+                                                        temp_est, eval_flag);
             successors.add(nextSuccessor);
         }
         return successors;
